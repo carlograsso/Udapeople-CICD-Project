@@ -45,8 +45,8 @@ jobs:
       - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
+      # - restore_cache:
+      #     keys: [frontend-build]
       - run:
           name: Install frontend dependencies
           command: |
