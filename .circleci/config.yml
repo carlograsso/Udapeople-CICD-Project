@@ -147,6 +147,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "install required packages"
+          command: yum install -y tar gzip
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
@@ -163,15 +166,17 @@ jobs:
               --tags project=front-udapeople \
               --stack-name front-${CIRCLE_WORKFLOW_ID:0:7}  \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
-#       - run:
-#           name: Add back-end ip to ansible inventory
-#           command: |
-#             # Your code here
-#             exit 1
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.circleci/ansible/inventory.txt
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=back-udapeople" \
+            --output text >> project/.circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
 #       # Here's where you will add some code to rollback on failure
 
 #   configure-infrastructure:
