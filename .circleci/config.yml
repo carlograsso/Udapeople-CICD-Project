@@ -31,49 +31,64 @@ commands:
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi
+parameters:
+  node_image:
+    type: string
+    default: circleci/node:13.8.0
+  circleci_image:
+    type: string
+    default: circleci/node:latest
 
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Build front-end
+          name: Install frontend dependencies
           command: |
             cd frontend
             npm install
-            npm run build
+      - run:
+          name: Build frontend
+          command: |
+            cd frontend
+            nmp run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
 
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Back-end build
+          name: Install backend dependencies
           command: |
             cd backend
             npm install
+      - run:
+          name: Build backend
+          command: |
+            cd backend
             npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
 
-#   test-frontend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  # test-frontend:
+  #   docker:
+  #     - image: << pipeline.parameters.circleci_image >>
+  #   steps:
+  #     # Checkout code from git
+  #     # Restore from cache
+  #     # Your job code here
 
 #   test-backend:
 #     docker:
