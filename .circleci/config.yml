@@ -53,7 +53,7 @@ jobs:
           name: Install frontend dependencies
           command: |
             cd frontend
-            npm install
+            npm installl
       - run:
           name: Build frontend
           command: |
@@ -62,6 +62,10 @@ jobs:
       - save_cache:
           paths: [./frontend/node_modules]
           key: frontend-build1
+      - slack/notify:
+          when: on_fail
+          event: fail
+          template: basic_fail_1
 
   build-backend:
     docker:
