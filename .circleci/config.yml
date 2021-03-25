@@ -34,7 +34,7 @@ commands:
 parameters:
   node_image:
     type: string
-    default: circleci/node:13.8.0
+    default: circleci/node:latest
   circleci_image:
     type: string
     default: circleci/node:latest
@@ -84,7 +84,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: << pipeline.parameters.circleci_image >>
+      - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
       - restore_cache:
@@ -93,11 +93,12 @@ jobs:
           name: Execute front-end tests
           command: |
             cd frontend
+            npm install
             npm run test
 
   test-backend:
     docker:
-      - image: << pipeline.parameters.circleci_image >>
+      - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
       - restore_cache:
@@ -106,6 +107,7 @@ jobs:
           name: Execute back-end tests
           command: |
             cd backend
+            npm install
             npm run test
 
 #   scan-frontend:
@@ -292,12 +294,12 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
+      # - build-frontend
+      # - build-backend
+      - test-frontend
+        # requires: [build-frontend]
+      - test-backend
+        # requires: [build-backend]
       # - scan-backend:
       #     requires: [build-backend]
       # - scan-frontend:
