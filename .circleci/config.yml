@@ -52,7 +52,6 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --force
       - run:
           name: Build frontend
           command: |
@@ -74,7 +73,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --force
       - run:
           name: Build backend
           command: |
