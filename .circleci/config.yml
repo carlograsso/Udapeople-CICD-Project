@@ -42,7 +42,7 @@ parameters:
     default: amazon/aws-cli:latest
   ansible_image:
     type: string
-    defualt: python:3.7-alpine3.11
+    default: python:3.7-alpine3.11
 
 jobs:
   build-frontend:
