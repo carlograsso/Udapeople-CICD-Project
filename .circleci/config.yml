@@ -2,11 +2,6 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.1
 
-workflows:
-  send-notification:
-    jobs:
-      - notify:
-          context: slack-secrets
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -142,10 +137,10 @@ jobs:
             cd backend
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-  
+
   notify:
     docker:
-      - image: 'cimg/base:stable'
+      - image: "cimg/base:stable"
     steps:
       - slack/notify:
           custom: |
