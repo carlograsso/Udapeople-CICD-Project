@@ -300,7 +300,7 @@ jobs:
           name: Deploy backend
           command: |
             tar czf backend.tar.gz backend/dist
-            mv backend.tar.gz .circleci/ansible/roles/deploy/files/
+            cp backend.tar.gz .circleci/ansible/roles/deploy/files/
 
       - run:
           name: backend ansible play
@@ -386,7 +386,7 @@ workflows:
       #         only: [master]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
-      - run-migrations
+      # - run-migrations
       # requires: [configure-infrastructure]
       # - deploy-frontend:
       # requires: [run-migrations]
