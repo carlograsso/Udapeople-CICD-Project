@@ -254,6 +254,11 @@ jobs:
             cd frontend
             pwd
           # aws s3 cp ./dist "s3://front-dddab9f" --recursive
+      - run:
+          name: Deploy frontend objects2
+          command: |
+            cd frontend
+            ls
       # Here's where you will add some code to rollback on failure
 
 #   deploy-backend:
@@ -333,7 +338,7 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
+      # - build-frontend
       # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
@@ -352,8 +357,8 @@ workflows:
       #     requires: [deploy-infrastructure]
       # - run-migrations
       # requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [build-frontend]
+      - deploy-frontend
+        # requires: [build-frontend]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
