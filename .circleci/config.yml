@@ -67,7 +67,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [./frontend/node_modules, ./frontend/dist]
-          key: frontend-build1
+          key: frontend-build2
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -235,7 +235,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build1]
+          keys: [frontend-build2]
       - run:
           name: Install dependencies
           command: |
