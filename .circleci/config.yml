@@ -235,7 +235,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build2]
+          keys: [frontend-build1]
       - run:
           name: Install dependencies
           command: |
