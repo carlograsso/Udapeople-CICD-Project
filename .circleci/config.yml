@@ -223,7 +223,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully" backend/migrations-result.txt
             then
-              curl -Content-Type: text/plain" -H "token: abe83e9e-ca9d-45da-b79b-4802026051b8" --request PUT --data "1" GET https://api.memstash.io/values/MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+              curl -H "Content-Type: text/plain" -H "token: abe83e9e-ca9d-45da-b79b-4802026051b8" --request PUT --data "1" GET https://api.memstash.io/values/MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
             fi
             echo ${CIRCLE_WORKFLOW_ID:0:7}
 
