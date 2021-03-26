@@ -252,7 +252,6 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm run build
             aws s3 cp ./dist "s3://front-dddab9f" --recursive
       # Here's where you will add some code to rollback on failure
 
