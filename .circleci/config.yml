@@ -59,7 +59,7 @@ jobs:
           name: Install frontend dependencies
           command: |
             cd frontend
-            npm installl
+            npm install
       - run:
           name: Build frontend
           command: |
