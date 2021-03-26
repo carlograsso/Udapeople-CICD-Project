@@ -53,8 +53,8 @@ jobs:
       - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
-      # - restore_cache:
-      #     keys: [frontend-build]
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Install frontend dependencies
           command: |
@@ -66,8 +66,8 @@ jobs:
             cd frontend
             npm run build
       - save_cache:
-          paths: [./frontend/node_modules, ./frontend/dist]
-          key: frontend-build1
+          paths: [./frontend/node_modules]
+          key: frontend-build
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -99,12 +99,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build1]
+          keys: [frontend-test]
       - run:
           name: Execute front-end tests
           command: |
             cd frontend
+            npm install
             npm run test
+      - save_cache:
+          paths: [./frontend/node_modules]
+          key: frontend-test
 
   test-backend:
     docker:
@@ -112,12 +116,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-test]
       - run:
           name: Execute back-end tests
           command: |
             cd backend
+            npm install
             npm run test
+      - save_cache:
+          paths: [./backend/node_modules]
+          key: backend-test
 
   scan-frontend:
     docker:
@@ -125,13 +133,17 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build1]
+          keys: [frontend-audit]
       - run:
           name: check for vulnerabilities in front-end
           command: |
             cd frontend
+            npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+      - save_cache:
+          paths: [./frontend/node_modules]
+          key: frontend-audit
 
   scan-backend:
     docker:
@@ -139,13 +151,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-audit]
       - run:
           name: check for vulnerabilities in back-end
           command: |
             cd backend
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+      - save_cache:
+          paths: [./backend/node_modules]
+          key: backend-audit
 
   deploy-infrastructure:
     docker:
@@ -227,6 +242,10 @@ jobs:
               curl -H "Content-Type: text/plain" -H "token: abe83e9e-ca9d-45da-b79b-4802026051b8" --request PUT --data "1" GET https://api.memstash.io/values/MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
             fi
             echo ${CIRCLE_WORKFLOW_ID:0:7}
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend/dist
 
   #       # Here's where you will add some code to rollback on failure
   deploy-frontend:
@@ -261,26 +280,33 @@ jobs:
           name: Deploy frontend objects2
           command: |
             cd frontend
-            aws s3 cp ./dist "s3://udapeople-dddab9f" --recursive
+            aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
       # Here's where you will add some code to rollback on failure
 
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
+  deploy-backend:
+    docker:
+      - image: << pipeline.parameters.ansible_image >>
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["44:cb:83:26:de:39:5c:97:bc:30:16:87:aa:3f:11:49"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Deploy backend
+          command: |
+            tar czf .circleci/ansible/roles/deploy/files/backend.tar.gz -P backend/dist
+      - run:
+          name: backend ansible play
+          no_output_timeout: 30m
+          command: |
+            cd .circleci/ansible/
+            ansible-playbook -i inventory.txt deploy-backend.yml
 #       # Here's where you will add some code to rollback on failure
-
 #   smoke-test:
 #     docker:
 #       # Lightweight Docker image
@@ -360,9 +386,9 @@ workflows:
       #     requires: [deploy-infrastructure]
       # - run-migrations
       # requires: [configure-infrastructure]
-      - deploy-frontend
-        # requires: [run-migrations]
-      # - deploy-backend:
+      # - deploy-frontend:
+      # requires: [run-migrations]
+      - deploy-backend
       #     requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]

@@ -1,0 +1,20 @@
+- name: "install dependencies."
+  become: true
+  apt:
+    name: "tar"
+    state: latest
+    update_cache: yes
+
+- name: Copy backend dist files to remote server
+  copy:
+    src: backend.tar.gz
+    dest: /home/ubuntu
+
+- name: unzip files
+  shell: |
+    tar -zxvf backend.tar.gz
+    cd backend
+
+- name: Executing node
+  shell: |
+    pm2 start index.js -f
