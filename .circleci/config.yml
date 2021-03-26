@@ -236,12 +236,12 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build1]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
             command: yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
