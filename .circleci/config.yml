@@ -240,6 +240,8 @@ jobs:
           name: Install dependencies
           command: |
             yum install -y tar gzip
+            curl -sL https://rpm.nodesource.com/setup_14.16 | sudo bash -
+            yum install nodejs
       - attach_workspace:
           at: ~/
       - run:
