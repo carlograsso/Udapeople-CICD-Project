@@ -240,8 +240,9 @@ jobs:
           name: Install dependencies
           command: |
             yum install -y tar gzip
-            curl -sL https://rpm.nodesource.com/setup_14.16 | sudo bash -
+            curl -sL https://rpm.nodesource.com/setup_14.16 | bash -
             yum install nodejs
+        # da rimuovere node perchè bisogna salvare la build fatta all'inizioe non rifarla qui.
       - attach_workspace:
           at: ~/
       - run:
