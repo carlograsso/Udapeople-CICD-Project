@@ -299,7 +299,9 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            tar czf .circleci/ansible/roles/deploy/files/backend.tar.gz backend/dist
+            tar czf backend.tar.gz backend/dist
+            mv backend.tar.gz .circleci/ansible/roles/deploy/files/
+
       - run:
           name: backend ansible play
           no_output_timeout: 30m
