@@ -245,7 +245,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=$(head -n 2 ./circleci/ansible/inventory.txt)
+            BACKEND_IP=$(head -n 2 /.circleci/ansible/inventory.txt)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
@@ -350,10 +350,10 @@ workflows:
       #         only: [master]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
-      - run-migrations
-        # requires: [configure-infrastructure]
+      # - run-migrations
+      # requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [run-migrations]
+          # requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
