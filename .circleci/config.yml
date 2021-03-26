@@ -67,7 +67,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [./frontend/node_modules, ./frontend/dist]
-          key: frontend-build2
+          key: frontend-build1
       - slack/notify:
           event: fail
           template: basic_fail_1
@@ -338,7 +338,7 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
+      - build-frontend
       # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
@@ -358,7 +358,7 @@ workflows:
       # - run-migrations
       # requires: [configure-infrastructure]
       - deploy-frontend
-        # requires: [build-frontend]
+        requires: [build-frontend]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
