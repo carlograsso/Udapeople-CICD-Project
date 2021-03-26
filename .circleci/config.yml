@@ -211,8 +211,6 @@ jobs:
       - image: << pipeline.parameters.node_image >>
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -225,31 +223,37 @@ jobs:
           command: |
             if grep -q "has been executed successfully" backend/migrations-result.txt
             then
-              curl -H "Content-Type: text/plain" -H "token: abe83e9e-ca9d-45da-b79b-4802026051b8" --request PUT --data "1" https://api.memstash.io/values/MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
+              curl -Content-Type: text/plain" -H "token: abe83e9e-ca9d-45da-b79b-4802026051b8" --request PUT --data "1" GET https://api.memstash.io/values/MIGRATION_${CIRCLE_WORKFLOW_ID:0:7}
             fi
             echo ${CIRCLE_WORKFLOW_ID:0:7}
 
 #       # Here's where you will add some code to rollback on failure
-#   deploy-frontend:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Deploy frontend objects
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure
+  deploy-frontend:
+    docker:
+      - image: << pipeline.parameters.aws_image >>
+    steps:
+      -checkout
+      - restore_cache:
+          keys: [frontend-build1]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(head -n 2 ./circleci/ansible/inventory.txt)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm run build
+            aws s3 cp ./dist "s3://front-dddab9f" --recursive
+      # Here's where you will add some code to rollback on failure
 
 #   deploy-backend:
 #     docker:
@@ -347,8 +351,8 @@ workflows:
       #     requires: [deploy-infrastructure]
       - run-migrations
         # requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
