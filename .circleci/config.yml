@@ -308,6 +308,11 @@ jobs:
           command: |
             apk add --update ansible
       - run:
+          name: test1
+          command: |
+            cd .circleci/ansible/roles/deploy/files
+            pwd
+      - run:
           name: Deploy backend
           command: |
             tar czf backend.tar.gz backend/dist
