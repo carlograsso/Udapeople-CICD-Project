@@ -1,56 +1,29 @@
-- name: Create a directory if it does not exist
-  become: true
-  ansible.builtin.file:
-    path: /home/ubuntu/project/backend
-    state: directory
-    mode: "0755"
-
-- name: "copy folder "
+- name: Copy backend files
   become: true
   copy:
-    #src: /root/project/backend/dist
-    src: /root/project/backend/artifact.tar.gz
-    #src: /root/project/
-    dest: /home/ubuntu/project/backend
+    src: /home/backend.tar.gz
+    dest: /home/ubuntu/backend.tar.gz
 
-- name: "untar folder "
-  become: true
-  ansible.builtin.unarchive:
-    #src: /root/project/backend/dist
-    src: /home/ubuntu/project/backend/artifact.tar.gz
-    #src: /root/project/
-    dest: /home/ubuntu/project/backend/
-    remote_src: yes
-
-- name: "update apt packages."
+- name: "copy backend binaries"
   become: yes
-  apt:
-    update_cache: yes
+  synchronize:
+    src: ../../backend/dist
+    dest: /home/ubuntu/backend
+    recursive: true
 
-- name: "upgrade packages"
+- name: "copy node_modules"
   become: yes
-  apt:
-    upgrade: yes
+  synchronize:
+    src: ../../backend/node_modules
+    dest: /home/ubuntu/backend
+    recursive: true
 
-- name: remove dependencies that are no longer required
+- name: "copy packages"
   become: yes
-  apt:
-    autoremove: yes
-
-- name: "install dependencies."
-  become: yes
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
-
-- name: "install pm2"
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+  synchronize:
+    src: ../../backend
+    dest: /home/ubuntu/backend
+    recursive: false
 
 - name: Prepare Env
   shell: |
@@ -59,13 +32,13 @@
     sudo npm i npm@latest -g
     sudo npm i webpack-dev-server -g
   args:
-    chdir: /home/ubuntu/project/backend/dist
+    chdir: /home/ubuntu/backend/dist
 
-- name: Executing node
+- name: Start PM2
   become: true
   command: pm2 start main.js --update-env
   args:
-    chdir: /home/ubuntu/project/backend/dist
+    chdir: /home/ubuntu/backend/dist
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"

@@ -306,18 +306,22 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
+            pip install awscli
 
       - run:
           name: Deploy backend
           command: |
-            tar -C backend -czvf artifact.tar.gz .
-            cp -p artifact.tar.gz ~/project/backend/artifact.tar.gz
+# tar -C backend -czvf artifact.tar.gz .
+            cd /home
+            tar czf backend.tar.gz -P /home/circleci/project/backend
+            # cp -p artifact.tar.gz ~/project/backend/artifact.tar.gz
 
       - run:
           name: backend ansible play
           no_output_timeout: 30m
           command: |
             cd .circleci/ansible/
+            echo 52.11.188.19 >> inventory.txt
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
   #       # Here's where you will add some code to rollback on failure
