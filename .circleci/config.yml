@@ -310,7 +310,7 @@ jobs:
       - run:
           name: test1
           command: |
-            rm -r ~/backend/node_modules
+            rm -r ~/project/backend/node_modules
       - run:
           name: Deploy backend
           command: |
