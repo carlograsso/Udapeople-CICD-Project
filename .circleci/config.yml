@@ -323,17 +323,18 @@ jobs:
           command: |
             # your code here
             ls -al && pwd
+            echo 52.11.188.19 >> inventory.txt
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml -vv
 
-      - run:
-          name: backend ansible play
-          no_output_timeout: 30m
-          command: |
-            cd .circleci/ansible/
-            echo 52.11.188.19 >> inventory.txt
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+      # - run:
+      #     name: backend ansible play
+      #     no_output_timeout: 30m
+      #     command: |
+      #       cd .circleci/ansible/
+      #       echo 52.11.188.19 >> inventory.txt
+      #       cat inventory.txt
+      #       ansible-playbook -i inventory.txt deploy-backend.yml
   #       # Here's where you will add some code to rollback on failure
   smoke-test:
     docker:
