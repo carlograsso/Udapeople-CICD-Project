@@ -324,6 +324,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             cd .circleci/ansible/
+            echo  34.215.72.87 > inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
 #       # Here's where you will add some code to rollback on failure
 #   smoke-test:
