@@ -293,29 +293,38 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: << pipeline.parameters.ansible_image >>
+      - image: << pipeline.parameters.py_alp_image >>
     steps:
+      # Checkout code from git
       - checkout
+      # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["44:cb:83:26:de:39:5c:97:bc:30:16:87:aa:3f:11:49"]
+      # attach workspace
       - attach_workspace:
-          at: ~/
-
+          at: .
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            # your code here
+            cd /tmp
+            apk add --update ansible curl rsync openssh nodejs npm tar gzip
             pip install awscli
-
+      - restore_cache:
+          keys: ["backend-dist", "backend-build"]
       - run:
-          name: Deploy backend
+          name: Compress dist Files
           command: |
-
             cd /home
             tar czf backend.tar.gz -P /home/circleci/project/backend
-
-      # tar -C backend -czvf artifact.tar.gz .
-      # cp -p artifact.tar.gz ~/project/backend/artifact.tar.gz
+      - run:
+          name: Deploy backend
+          working_directory: ./.circleci/ansible
+          command: |
+            # your code here
+            ls -al && pwd
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml -vv
 
       - run:
           name: backend ansible play
