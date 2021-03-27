@@ -301,7 +301,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            tar czf backend.tar.gz backend
+            tar czf artifact.tar.gz backend
         # tar czf backend.tar.gz backend/dist
         # mkdir .circleci/ansible/roles/deploy/files
         # cp backend.tar.gz .circleci/ansible/roles/deploy/files/backend.tar.gz
