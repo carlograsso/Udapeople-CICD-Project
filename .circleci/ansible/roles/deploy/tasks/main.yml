@@ -1,42 +1,22 @@
----
-- name: "install dependencies."
+- name: "copy backend folder"
   become: true
-  apt:
-    name: "tar"
-    state: latest
-    update_cache: yes
+  synchronize:
+    src: ../../backend
+    dest: /home/ubuntu/
+    recursive: true
 
-- name: "install pm2"
+- name: "install node dependencies"
   become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
-
-- name: Copy backend dist files to remote server
-  copy:
-    src: /root/project/backend
-    dest: /home/ubuntu
-
-- name: Install Node modules
   shell: |
     cd /home/ubuntu/backend
-    npm install
-- name: Building backend service
+    npm i
+- name: "build backend"
+  become: true
   shell: |
     cd /home/ubuntu/backend
     npm run build
-    npm run prestart:prod
-
-- name: Executing node
+- name: "start backend"
   become: true
   shell: |
-    cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start
-    pm2 ls
-- name: start pm2 for dist/main.js
-  become: no
-  shell: pm2 start main.js
-  args:
-    chdir: /home/ubuntu/backend/dist
+    cd /home/ubuntu/backend    
+    pm2 start npm -- run start
