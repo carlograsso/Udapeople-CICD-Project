@@ -302,7 +302,7 @@ jobs:
           fingerprints: ["44:cb:83:26:de:39:5c:97:bc:30:16:87:aa:3f:11:49"]
       # attach workspace
       - attach_workspace:
-          at: .
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -323,6 +323,7 @@ jobs:
           command: |
             # your code here
             ls -al && pwd
+            echo 18.237.82.35 > inventory.txt
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml -vv
 
@@ -428,15 +429,15 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
       #       branches:
       #         only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      - run-migrations
+        # requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       - deploy-backend:
