@@ -116,7 +116,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-test]
+          keys: [backend-test1]
       - run:
           name: Execute back-end tests
           command: |
@@ -125,7 +125,7 @@ jobs:
             npm run test
       - save_cache:
           paths: [./backend/node_modules]
-          key: backend-test
+          key: backend-test1
 
   scan-frontend:
     docker:
