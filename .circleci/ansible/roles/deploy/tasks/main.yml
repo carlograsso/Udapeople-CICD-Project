@@ -22,18 +22,6 @@
   shell: |
     tar -zxvf backend.tar.gz
 
-- name: test folder
-  shell: |
-    ls
-- name: test folder 2
-  shell: |
-    cd backend
-    ls
-
-- name: test folder 3
-  shell: |
-    pwd
-
 - name: Executing node
   shell: |
-    pm2 start backend/index.js -f
+    pm2 start backend/dist/index.js -f
