@@ -1,7 +1,7 @@
 - name: "copy backend folder"
   become: true
   synchronize:
-    src: ../../backend
+    src: ~/backend
     dest: /home/ubuntu/
     recursive: true
 
