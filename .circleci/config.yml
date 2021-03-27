@@ -306,12 +306,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible nodejs npm
+            apk add --update ansible
       - run:
           name: test1
           command: |
-            cd backend
-            npm run prestart:prod
+            rm -r backend/node_modules
       - run:
           name: Deploy backend
           command: |
