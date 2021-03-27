@@ -14,7 +14,9 @@
   shell: |
     tar -zxvf backend.tar.gz
     cd backend
+    ls
+    pwd
 
 - name: Executing node
   shell: |
-    pm2 start index.js -f
+    pm2 start backend/index.js -f
