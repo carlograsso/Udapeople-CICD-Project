@@ -311,10 +311,12 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-# tar -C backend -czvf artifact.tar.gz .
+
             cd /home
             tar czf backend.tar.gz -P /home/circleci/project/backend
-            # cp -p artifact.tar.gz ~/project/backend/artifact.tar.gz
+
+      # tar -C backend -czvf artifact.tar.gz .
+      # cp -p artifact.tar.gz ~/project/backend/artifact.tar.gz
 
       - run:
           name: backend ansible play
