@@ -5,6 +5,14 @@
     state: latest
     update_cache: yes
 
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+
 - name: Copy backend dist files to remote server
   copy:
     src: backend.tar.gz
@@ -13,8 +21,17 @@
 - name: unzip files
   shell: |
     tar -zxvf backend.tar.gz
+
+- name: test folder
+  shell: |
+    ls
+- name: test folder 2
+  shell: |
     cd backend
     ls
+
+- name: test folder 3
+  shell: |
     pwd
 
 - name: Executing node
