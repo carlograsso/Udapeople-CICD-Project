@@ -310,7 +310,7 @@ jobs:
       - run:
           name: test1
           command: |
-            cd .circleci/ansible/roles/deploy/files
+            cd .circleci/ansible/roles/deploy/
             pwd
       - run:
           name: Deploy backend
