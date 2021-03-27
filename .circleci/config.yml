@@ -241,7 +241,6 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-            aws s3 cp backend/migrations-result.txt "s3://udapeople-udapeople-c8f967d" --recursive
       - run:
           name: Send migration results to memstash
           command: |
