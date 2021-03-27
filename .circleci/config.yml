@@ -247,6 +247,12 @@ jobs:
           paths:
             - project/backend/dist
 
+      - run:
+          name: test
+          command: |
+            cd backend/dist
+            pwd
+
   #       # Here's where you will add some code to rollback on failure
   deploy-frontend:
     docker:
@@ -292,6 +298,11 @@ jobs:
           fingerprints: ["44:cb:83:26:de:39:5c:97:bc:30:16:87:aa:3f:11:49"]
       - attach_workspace:
           at: ~/
+      - run:
+          name: test
+          command: |
+            cd backend/dist 
+            pwd
       - run:
           name: Install dependencies
           command: |
